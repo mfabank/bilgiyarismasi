@@ -11,8 +11,36 @@ class _SoruSayfasiState extends State<SoruSayfasi> {
 
   Testler test1 = Testler();
 
-  int gecerliIndex = 0;
-
+  void butonFonksiyonu(bool secilenButon) {
+    if (test1.testBittiMi() == true) {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text("Test Bitti"),
+              actions: [
+                FlatButton(
+                  child: Text("Tamam"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    setState(() {
+                      test1.testiSifirla();
+                      secimler = [];
+                    });
+                  },
+                ),
+              ],
+            );
+          });
+    } else {
+      setState(() {
+        test1.getYanit() == secilenButon
+            ? secimler.add(dogruIcon)
+            : secimler.add(yanlisIcon);
+        test1.sonrakiSoru();
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +54,7 @@ class _SoruSayfasiState extends State<SoruSayfasi> {
             padding: EdgeInsets.all(10.0),
             child: Center(
               child: Text(
-                test1.seviye1test[gecerliIndex].soru,
+                test1.getSoru(),
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 20.0,
@@ -58,10 +86,7 @@ class _SoruSayfasiState extends State<SoruSayfasi> {
                             size: 30.0,
                           ),
                           onPressed: () {
-                            setState(() {
-                              test1.seviye1test[gecerliIndex].yanit == false ? secimler.add(yanlisIcon) : secimler.add(dogruIcon);
-                              gecerliIndex++;
-                            });
+                            butonFonksiyonu(false);
                           },
                         ))),
                 Expanded(
@@ -73,10 +98,7 @@ class _SoruSayfasiState extends State<SoruSayfasi> {
                           color: Colors.green[400],
                           child: Icon(Icons.thumb_up, size: 30.0),
                           onPressed: () {
-                            setState(() {
-                              test1.seviye1test[gecerliIndex].yanit == true ? secimler.add(dogruIcon) : secimler.add(yanlisIcon);
-                              gecerliIndex++;
-                            });
+                            butonFonksiyonu(true);
                           },
                         ))),
               ])),
@@ -86,5 +108,13 @@ class _SoruSayfasiState extends State<SoruSayfasi> {
   }
 }
 
-const Icon dogruIcon = Icon(Icons.done_outline,color: Colors.green,size: 30,);
-const Icon yanlisIcon = Icon(Icons.cancel,color: Colors.red,size: 30,);
+const Icon dogruIcon = Icon(
+  Icons.done_outline,
+  color: Colors.green,
+  size: 30,
+);
+const Icon yanlisIcon = Icon(
+  Icons.cancel,
+  color: Colors.red,
+  size: 30,
+);
